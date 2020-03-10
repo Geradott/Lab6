@@ -1,0 +1,70 @@
+package bsu.rfe.java.group8.lab6.Chernysh.var6C;
+
+import java.awt.BorderLayout;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
+import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+
+public class CMainFrame extends JFrame {
+    private static final int iWidth = 1080;
+    private static final int iHeight = 720;
+    
+    private JMenuItem pauseMenuItem;
+    private JMenuItem resumeMenuItem;
+    
+    private CField field = new CField();
+    
+    public CMainFrame() {
+        super("Sinhronized flow programming");
+        setSize(iWidth, iHeight);
+        Toolkit kit = Toolkit.getDefaultToolkit();
+        setLocation((kit.getScreenSize().width - iWidth) / 2, (kit.getScreenSize().height - iHeight) / 2);
+        setExtendedState(MAXIMIZED_BOTH);
+        
+        JMenuBar menuBar = new JMenuBar();
+        setJMenuBar(menuBar);
+        JMenu ballMenu = new JMenu("Balls");
+        Action addBallAction = new AbstractAction("Add ball") {
+            public void actionPerformed(ActionEvent event) {
+                field.addBall();
+                if (!pauseMenuItem.isEnabled() && !resumeMenuItem.isEnabled()) {
+                    pauseMenuItem.setEnabled(true);
+                }
+            }
+        };
+        menuBar.add(ballMenu);
+        ballMenu.add(addBallAction);
+        JMenu controlMenu = new JMenu("Control");
+        menuBar.add(controlMenu);
+        Action pauseAction = new AbstractAction("Stop mooving") {
+            public void actionPerformed(ActionEvent event) {
+                field.pause();
+                pauseMenuItem.setEnabled(false);
+                resumeMenuItem.setEnabled(true);
+            }
+        };
+        pauseMenuItem = controlMenu.add(pauseAction);
+        pauseMenuItem.setEnabled(false);
+        Action resumeAction = new AbstractAction("Resume mooving") {
+            public void actionPerformed(ActionEvent event) {
+                field.resume();
+                pauseMenuItem.setEnabled(true);
+                resumeMenuItem.setEnabled(false);
+            }
+        };
+        resumeMenuItem = controlMenu.add(resumeAction);
+        resumeMenuItem.setEnabled(false);
+        getContentPane().add(field, BorderLayout.CENTER);
+    }
+    
+    public static void main(String[] args) {
+        CMainFrame frame = new CMainFrame();
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setVisible(true);
+    }
+}
